@@ -107,7 +107,7 @@ public class DownloadThread extends Thread {
                 InputStream inputStream = connection.getInputStream();
                 File file = new File(filePath);
                 if (!file.exists()) {
-                    Log.e("file", "创建文件夹：" + file.mkdirs());
+                    file.mkdirs();
                 }
 
                 RandomAccessFile randomAccessFile = new RandomAccessFile(filePath + (fileName == null ?RemoteFileUtil. getRemoteFileName(this.url) : fileName), "rw");
@@ -119,7 +119,6 @@ public class DownloadThread extends Thread {
                 byte[] buffer = new byte[1024];
                 int length = -1;
 
-                System.err.println("实际线程:" + threadId + ",开始位置:" + startIndex + ",结束位置:" + endIndex);
 
 
                 while ((length = inputStream.read(buffer)) != -1 && !isPause) {
@@ -134,7 +133,6 @@ public class DownloadThread extends Thread {
                     }
                 }
 
-                System.err.println("total = " + total);
 
                 randomAccessFile.close();
                 inputStream.close();
@@ -153,7 +151,6 @@ public class DownloadThread extends Thread {
 
                     //断开网络连接
                     connection.disconnect();
-                    System.out.println("线程" + threadId + "被终止");
 
                     if (threadDownloadListener != null) {
                         threadDownloadListener.onPause();
@@ -165,8 +162,7 @@ public class DownloadThread extends Thread {
 
                     threadDownloadListener.onFinish(total);
                 }
-                System.out.println("线程" + threadId + "下载完毕");
-            } else {
+             } else {
                 if (threadDownloadListener != null) {
 
                     threadDownloadListener.onPause();

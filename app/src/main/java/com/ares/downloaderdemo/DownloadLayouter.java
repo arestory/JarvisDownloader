@@ -4,7 +4,9 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.ares.downloader.jarvis.Jarvis;
@@ -30,6 +32,7 @@ public class DownloadLayouter {
         final Button btn = layout.findViewById(R.id.btn);
         final Button deleteBtn = layout.findViewById(R.id.deleteBtn);
 
+        final Switch sw1 = layout.findViewById(R.id.sw1);
         if (progressBar != null && btn != null) {
 
 
@@ -85,6 +88,14 @@ public class DownloadLayouter {
                 }
             });
 
+            downloader.allowBackgroundDownload(sw1.isChecked());
+            sw1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                    downloader.allowBackgroundDownload(isChecked);
+                }
+            });
 
             downloader.getDownloadedProgress(new DataCallBack<Float>() {
                 @Override

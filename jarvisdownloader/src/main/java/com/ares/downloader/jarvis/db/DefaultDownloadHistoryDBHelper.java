@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.ares.downloader.jarvis.core.DataCallBack;
 import com.ares.downloader.jarvis.core.LocalFileRecordBean;
@@ -34,6 +33,10 @@ public class DefaultDownloadHistoryDBHelper extends AbsDownloadHistoryDBHelper {
 
     private ExecutorService threadPool = Executors.newFixedThreadPool(10);
 
+    /**
+     * 初始化openhelper
+     * @param context 建议用application
+     */
     public DefaultDownloadHistoryDBHelper(Context context) {
         super(context, DB_NAME, null, VERSION);
     }
@@ -75,7 +78,7 @@ public class DefaultDownloadHistoryDBHelper extends AbsDownloadHistoryDBHelper {
     public void saveFileLengthOfThisUrl(String url, long fileLength) {
 
 
-        System.out.println("saveFileLengthOfThisUrl fileLength = " + fileLength);
+//        System.out.println("saveFileLengthOfThisUrl fileLength = " + fileLength);
 
         getWritableDatabase().delete(TABLE_ORIGIN_FILE, "url = ?", new String[]{url});
 
@@ -91,13 +94,13 @@ public class DefaultDownloadHistoryDBHelper extends AbsDownloadHistoryDBHelper {
         Cursor cursor = getReadableDatabase().query(TABLE_ORIGIN_FILE, new String[]{"file_length"}, "url = ?", new String[]{url}, null, null
                 , null);
 
-        System.err.println("lastDownloadRecord size =" + cursor.getCount());
+//        System.err.println("lastDownloadRecord size =" + cursor.getCount());
         while (cursor.moveToNext()) {
 
             defaultLength = cursor.getLong(cursor.getColumnIndex("file_length"));
         }
 
-        System.out.println("getFileLengthRecord fileLength = " + defaultLength);
+//        System.out.println("getFileLengthRecord fileLength = " + defaultLength);
 
         cursor.close();
         return defaultLength;
@@ -140,7 +143,7 @@ public class DefaultDownloadHistoryDBHelper extends AbsDownloadHistoryDBHelper {
 
             list.add(fileRecordBean);
 
-            Log.e("record",fileRecordBean.toString());
+//            Log.e("record",fileRecordBean.toString());
         }
 
 
@@ -168,7 +171,7 @@ public class DefaultDownloadHistoryDBHelper extends AbsDownloadHistoryDBHelper {
 
         }
         cursor.close();
-        Log.e("tag", "已下载文件的大小 = " + downloadedFileLength);
+//        Log.e("tag", "已下载文件的大小 = " + downloadedFileLength);
         return downloadedFileLength;
     }
 
@@ -196,11 +199,11 @@ public class DefaultDownloadHistoryDBHelper extends AbsDownloadHistoryDBHelper {
                 values.put("url", url);
                 values.put("thread_id", threadId);
                 values.put("downloaded_file_length", fileLength);
-                Log.e("tag", "threadId = " + threadId + ",保存已下载文件大小 = " + fileLength);
+//                Log.e("tag", "threadId = " + threadId + ",保存已下载文件大小 = " + fileLength);
 
-                long count = getWritableDatabase().insert(TABLE_RECORD_FILE, null, values);
+                getWritableDatabase().insert(TABLE_RECORD_FILE, null, values);
 
-                System.out.println("线程" + threadId + "插入下载的记录数 = " + count);
+//                System.out.println("线程" + threadId + "插入下载的记录数 = " + count);
             }
         });
 
@@ -218,7 +221,7 @@ public class DefaultDownloadHistoryDBHelper extends AbsDownloadHistoryDBHelper {
 
             defaultIndex = cursor.getLong(cursor.getColumnIndex(DownloadRecord.START_INDEX_COLUMN));
 
-            Log.e("defaultIndex", "存在断点记录，上次的位置defaultIndex=" + defaultIndex);
+//            Log.e("defaultIndex", "存在断点记录，上次的位置defaultIndex=" + defaultIndex);
         }
 
         cursor.close();

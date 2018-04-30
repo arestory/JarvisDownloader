@@ -1,13 +1,10 @@
 package com.ares.downloaderdemo;
 
 import android.app.Application;
-import android.content.Context;
 
 import com.ares.downloader.jarvis.Jarvis;
 import com.ares.downloader.jarvis.db.DefaultDownloadHistoryDBHelper;
 import com.squareup.leakcanary.LeakCanary;
-
-import java.lang.ref.WeakReference;
 
 /**
  * Created on 2018/4/30 20:52.
@@ -28,7 +25,7 @@ public class App extends Application {
             return;
         }
 
-        Jarvis.init(new DefaultDownloadHistoryDBHelper(new WeakReference<Context>(this)));
+        Jarvis.init(new DefaultDownloadHistoryDBHelper(this));
         LeakCanary.install(this);
 
 

@@ -9,7 +9,6 @@ import android.util.Log;
 import com.ares.downloader.jarvis.core.DataCallBack;
 import com.ares.downloader.jarvis.core.LocalFileRecordBean;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -35,8 +34,8 @@ public class DefaultDownloadHistoryDBHelper extends AbsDownloadHistoryDBHelper {
 
     private ExecutorService threadPool = Executors.newFixedThreadPool(10);
 
-    public DefaultDownloadHistoryDBHelper(WeakReference<Context> context) {
-        super(context.get(), DB_NAME, null, VERSION);
+    public DefaultDownloadHistoryDBHelper(Context context) {
+        super(context, DB_NAME, null, VERSION);
     }
 
 

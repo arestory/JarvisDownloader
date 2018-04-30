@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    android:gravity="center_vertical"
+    android:padding="10dp"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+
+    <ProgressBar
+        android:layout_centerVertical="true"
+
+        android:layout_toEndOf="@id/btnLayout"
+        android:id="@+id/pb"
+        android:progress="0"
+        android:max="100"
+        style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_margin="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+    <LinearLayout
+        android:id="@+id/btnLayout"
+        android:layout_centerVertical="true"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/btn"
+            android:text="下载"
+            android:layout_weight="1"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/deleteBtn"
+            android:text="删除"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</LinearLayout>

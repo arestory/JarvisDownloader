@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+
+    <Button
+        android:onClick="startAll"
+        android:text="全部开始"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:onClick="pauseAll"
+        android:text="全部暂停"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:onClick="deleteAll"
+        android:text="删除全部"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <include
+                android:id="@+id/layout1"
+                layout="@layout/download_item"
+                />
+            <include
+                android:id="@+id/layout2"
+                layout="@layout/download_item"
+                />
+
+            <include
+                android:id="@+id/layout3"
+                layout="@layout/download_item"
+                />
+
+            <include
+                android:id="@+id/layout4"
+                layout="@layout/download_item"
+                />
+
+            <include
+                android:id="@+id/layout5"
+                layout="@layout/download_item"
+                />
+
+            <include
+                android:id="@+id/layout6"
+                layout="@layout/download_item"
+                />
+        </LinearLayout>
+
+
+    </android.support.v4.widget.NestedScrollView>
+
+</LinearLayout>

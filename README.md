@@ -1,6 +1,6 @@
 # JarvisDownloader
 
-熟悉漫威电影的人都知道Jarvis，他是钢铁侠的智能管家，帮助钢铁侠制造装甲、分析大量数据、协助建模等各种智能工作，可惜在复联2中，Jarvis与灵魂宝石共同结合成Vision，钢铁侠失去了这位如亲人一般的智能AI，后来Tony用F.R.I.D.A.Y代替了Jarvis的工作，但从钢铁侠与Friday的互动来看，他只把Friday当做一般的AI，并没有投入如对待Jarvis的感情。
+熟悉漫威电影的人都知道Jarvis，他是钢铁侠的智能管家，帮助钢铁侠制造装甲、分析大量数据、协助建模等各种智能工作，可惜在复联2中，Jarvis与心灵之石结合成Vision，钢铁侠失去了这位如亲人一般的智能AI，后来Tony用F.R.I.D.A.Y代替了Jarvis的工作，但从钢铁侠与Friday的互动来看，他只把Friday当做一般的AI，并没有投入如对待Jarvis的感情。
 
 最近复联3上映，中国没有同步上映，真的太可惜了，五一本来还想过去香港看，但想到到时会人生人海还是算了，所以假期闲余时间就撸了个**JarvisDownloader**，之所以以Jarvis命名，也是因为我太喜欢Jarvis这个AI了，它属于人工智能的顶端啊！**JarvisDownloader**虽然没有Jarvis那么强大，但在下载文件方面，具备了很多的优点。
  

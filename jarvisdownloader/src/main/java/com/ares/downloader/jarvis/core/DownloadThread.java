@@ -1,7 +1,6 @@
 package com.ares.downloader.jarvis.core;
 
 import android.os.Environment;
-import android.util.Log;
 
 import com.ares.downloader.jarvis.Jarvis;
 
@@ -19,7 +18,7 @@ import java.net.URL;
 
 public class DownloadThread extends Thread {
 
-    private static final String DEFAULT_FILE_PATH = Environment.getExternalStorageDirectory()+File.separator+"Friday";
+    private static final String DEFAULT_FILE_PATH = Environment.getExternalStorageDirectory()+File.separator+"Jarvis";
 
     private String url;//下载的URL
     private String filePath = DEFAULT_FILE_PATH;//存放的目录
@@ -99,6 +98,8 @@ public class DownloadThread extends Thread {
 
 
             int code = connection.getResponseCode();
+
+
 
 
             if (code == RemoteFile.SUPPORT_RANGE || code == 200) {

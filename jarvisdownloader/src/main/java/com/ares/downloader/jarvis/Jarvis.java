@@ -195,7 +195,7 @@ public class Jarvis {
 
                 stringDownloaderEntry.getValue().deleteCacheFile();
             }
-            downloaderList.clear();
+
         }
 
 

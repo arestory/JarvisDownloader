@@ -72,7 +72,6 @@ public class DownloadActivity extends AppCompatActivity {
 //        list.add(new FileBean(url12));
 //        rv.setAdapter(downloadAdapter);
 
-        Debug.startMethodTracing("fridaytrace");
 
         new DownloadLayouter().add(findViewById(R.id.layout1), url9)
 

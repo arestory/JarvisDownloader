@@ -13,6 +13,7 @@
 - 下载进度回调时自动切换到UI线程，方便更新UI。
 - 自动与activity绑定生命周期，无需手动释放
 - activity不可见时，不会更新UI，可见时会自动恢复状态
+- 自定义请求头
 - 支持查询下载历史列表
 
 ## 使用**JarvisDownloader**
@@ -31,7 +32,7 @@ repositories {
 
 dependencies {
 
-	api 'com.github.yuwenque:JarvisDownloader:0.2.0'
+	api 'com.github.yuwenque:JarvisDownloader:0.4.0'
 
 }
 
@@ -132,6 +133,14 @@ downloader.setDownloadListener(new DownloadListener() {
     }
 });
 
+//增加额外的请求头
+downloader.addExtraRequestProperty("test-key","test-value");
+
+//多个请求头时，可添加map
+Map<String,String> map = new HashMap<>();
+map.put("test1","value1");
+map.put("test2","value2");
+downloader.addExtraRequestPropertyMap(map);
 
 //开始下载
 downloader.download();

@@ -2,7 +2,6 @@ package com.ares.downloader.jarvis.core;
 
 import com.ares.downloader.jarvis.Jarvis;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -52,7 +51,7 @@ public class RemoteFileUtil {
 
         long length = Jarvis.getDownloadRecordDBHelper().getFileLengthRecord(fileUrl);
         System.out.println("RemoteFile length = "+length);
-        if (length != 0) {
+        if (length > 0) {
 
             remoteFile.setSupportRange(true);
             remoteFile.setLength(length);
@@ -74,7 +73,10 @@ public class RemoteFileUtil {
             //必须加这个头部，否则无法返回正常支持断点续传的响应码206
             connection.setRequestProperty("Range", "bytes=0-");
             connection.connect();
-            System.out.println("connection code = " + connection.getResponseCode());
+            System.out.println("fileUrl = "+fileUrl);
+            System.out.println("connection code = " + connection.getResponseCode()+",支持断点续传下载？"+(connection.getResponseCode()==206));
+
+
 
             if (connection.getResponseCode() == 200 || connection.getResponseCode() == 206) {
 
@@ -87,7 +89,7 @@ public class RemoteFileUtil {
 
                 return remoteFile;
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
 
             e.printStackTrace();
             return remoteFile;

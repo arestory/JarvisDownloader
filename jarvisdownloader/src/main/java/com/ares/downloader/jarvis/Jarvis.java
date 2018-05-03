@@ -25,6 +25,7 @@ import com.ares.downloader.jarvis.db.AbsDownloadHistoryDBHelper;
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,10 +43,10 @@ public class Jarvis {
 
     private static Jarvis mFriday;
 
-    private ExecutorService threadPool ;
+    private ExecutorService threadPool;
 
 
-    private LinkedHashMap<String ,Downloader> downloaderList;
+    private LinkedHashMap<String, Downloader> downloaderList;
 
 
     private static AbsDownloadHistoryDBHelper downloadRecordDBHelper;//全局的数据库helper
@@ -60,18 +61,19 @@ public class Jarvis {
 
     /**
      * 建议在Application中初始化
+     *
      * @param downloadRecordDBHelper
      */
-    public static void init(AbsDownloadHistoryDBHelper downloadRecordDBHelper){
+    public static void init(AbsDownloadHistoryDBHelper downloadRecordDBHelper) {
 
 
-        Jarvis.downloadRecordDBHelper=downloadRecordDBHelper;
+        Jarvis.downloadRecordDBHelper = downloadRecordDBHelper;
     }
 
 
-    public static AbsDownloadHistoryDBHelper getDownloadRecordDBHelper(){
+    public static AbsDownloadHistoryDBHelper getDownloadRecordDBHelper() {
 
-        if(downloadRecordDBHelper==null){
+        if (downloadRecordDBHelper == null) {
 
             throw new RuntimeException("请首先初始化一个继承于AbsDownloadHistoryDBHelper的SQLiteOpenHelper,请参考DefaultDownloadHistoryDBHelper");
         }
@@ -96,6 +98,7 @@ public class Jarvis {
         }
         return mFriday;
     }
+
 
     /**
      * 设置线程池空间
@@ -123,7 +126,7 @@ public class Jarvis {
         }
 
 
-        downloaderList.put(downloader.url,downloader);
+        downloaderList.put(downloader.url, downloader);
 
 
     }
@@ -151,33 +154,33 @@ public class Jarvis {
     /**
      * 全部开始下载
      */
-    public void startAllDownload(){
+    public void startAllDownload() {
 
         if (downloaderList != null) {
 
-                for (Map.Entry<String, Downloader> stringDownloaderEntry : downloaderList.entrySet()) {
+            for (Map.Entry<String, Downloader> stringDownloaderEntry : downloaderList.entrySet()) {
 
-                    Downloader downloader = stringDownloaderEntry.getValue();
-                    if(downloader.getDownloadState()==DownloadState.PAUSE||downloader.getDownloadState()==DownloadState.FAIL){
-                        stringDownloaderEntry.getValue().download();
+                Downloader downloader = stringDownloaderEntry.getValue();
+                if (downloader.getDownloadState() == DownloadState.PAUSE || downloader.getDownloadState() == DownloadState.FAIL) {
+                    stringDownloaderEntry.getValue().download();
 
-                    }
                 }
+            }
 
         }
-
 
 
     }
 
     /**
      * 获取下载列表
+     *
      * @param callBack
      */
-    public void getDownloadedList(DataCallBack<List<LocalFileRecordBean>> callBack){
+    public void getDownloadedList(DataCallBack<List<LocalFileRecordBean>> callBack) {
 
 
-        if(callBack!=null){
+        if (callBack != null) {
 
             callBack.onData(Jarvis.getDownloadRecordDBHelper().getRecordList());
         }
@@ -185,7 +188,6 @@ public class Jarvis {
 
     /**
      * 删除所有下载记录
-     *
      */
     public void forceDeleteAll() {
 
@@ -206,20 +208,21 @@ public class Jarvis {
      */
     public void pauseAllDownloader() {
 
-        if (downloaderList != null){
+        if (downloaderList != null) {
 
             for (Map.Entry<String, Downloader> stringDownloaderEntry : downloaderList.entrySet()) {
 
                 stringDownloaderEntry.getValue().pause();
 
-            }}
+            }
+        }
 
     }
 
 
     /**
-     *
      * 构建
+     *
      * @param url 下载链接
      * @return
      */
@@ -237,7 +240,7 @@ public class Jarvis {
      * @return
      */
     public static Friday with(Context context) {
-        WeakReference<Context> contextWeakReference= new WeakReference<Context>(context);
+        WeakReference<Context> contextWeakReference = new WeakReference<Context>(context);
 
         return new Friday(contextWeakReference);
     }
@@ -278,7 +281,6 @@ public class Jarvis {
         private List<DownloadThread> downloadThreadList;//存放各个下载线程，用于暂停的情况
 
 
-
         private volatile DownloadState downloadState = DownloadState.PAUSE;//下载状态,默认为暂停
 
         //用于保存远端文件的长度及是否支持断点续传
@@ -296,6 +298,38 @@ public class Jarvis {
         private volatile boolean uiVisible = true;//UI是否可见
 
         private boolean allowBackgroundDownload = true;//UI不可见时，是否继续下载
+
+
+        private float currentProgress = 0f;//当前进度
+
+
+        private Map<String,String> requestPropertyMap = new HashMap<>();
+
+        /**
+         * 添加额外的请求头
+         * @param key
+         * @param value
+         * @return
+         */
+        public Downloader addExtraRequestProperty(String key, String value){
+
+            requestPropertyMap.put(key,value);
+            return this;
+        }
+
+        /**
+         * 添加额外的请求头
+         * @param map
+         * @return
+         */
+        public Downloader addExtraRequestPropertyMap(Map<String,String> map){
+
+
+            requestPropertyMap.putAll(map);
+            return this;
+        }
+
+
         /**
          * @param context
          * @param url
@@ -305,23 +339,23 @@ public class Jarvis {
             this(url);
             this.contextWeakReference = new WeakReference<>(context);
 
-            if(this.contextWeakReference.get()!=null
-             &&this.contextWeakReference.get() instanceof Activity){
+            if (this.contextWeakReference.get() != null
+                    && this.contextWeakReference.get() instanceof Activity) {
 
-                Activity activity = ((Activity)this.contextWeakReference.get());
+                Activity activity = ((Activity) this.contextWeakReference.get());
 
-                Fragment cacheFragment =  activity.getFragmentManager().findFragmentByTag(url);
-                if(cacheFragment!=null){
-                    fragment=(InvisibleFragment)cacheFragment;
-                }else{
+                Fragment cacheFragment = activity.getFragmentManager().findFragmentByTag(url);
+                if (cacheFragment != null) {
+                    fragment = (InvisibleFragment) cacheFragment;
+                } else {
                     fragment = InvisibleFragment.newInstance(url);
 
                 }
 
-               final FragmentTransaction transaction = activity.getFragmentManager().beginTransaction();
+                final FragmentTransaction transaction = activity.getFragmentManager().beginTransaction();
 
 
-                transaction.add(fragment,url);
+                transaction.add(fragment, url);
                 transaction.commit();
 
                 fragment.setLifeCallBack(new InvisibleFragment.LifeCallBack() {
@@ -334,15 +368,14 @@ public class Jarvis {
 
                     @Override
                     public void onStop() {
-                        System.out.println("current state = "+downloadState);
 
                         //如果进行中则将其停止
-                        if(downloadState==DownloadState.START){
+                        if (downloadState == DownloadState.START) {
 
 //                            pause();
-                            uiVisible =false;
+                            uiVisible = false;
 
-                            if(!allowBackgroundDownload){
+                            if (!allowBackgroundDownload) {
 
                                 pause();
                             }
@@ -355,11 +388,11 @@ public class Jarvis {
                     @Override
                     public void onRestart() {
 
-                        System.out.println("current state = "+downloadState);
-                        if(!uiVisible){
+                        System.out.println("current state = " + downloadState);
+                        if (!uiVisible) {
 
                             recovery();
-                            uiVisible =true;
+                            uiVisible = true;
                         }
                     }
                 });
@@ -371,10 +404,11 @@ public class Jarvis {
 
         /**
          * 是否允许应用界面不可见时仍然继续下载，context为service可忽略
+         *
          * @param allow true 允许， false 界面不可见时暂停
          * @return
          */
-        public Downloader allowBackgroundDownload(boolean allow){
+        public Downloader allowBackgroundDownload(boolean allow) {
 
             this.allowBackgroundDownload = allow;
             return this;
@@ -382,14 +416,15 @@ public class Jarvis {
 
         /**
          * 刷新频率
+         *
          * @param refreshTime
          * @return
          */
-        public Downloader refreshTime(long refreshTime){
+        public Downloader refreshTime(long refreshTime) {
 
-            if(refreshTime<=100){
+            if (refreshTime <= 100) {
 
-                refreshTime=100;
+                refreshTime = 100;
             }
             this.refreshTime = refreshTime;
             return this;
@@ -413,37 +448,47 @@ public class Jarvis {
          */
         public float getDownloadedProgress() {
 
+
+            if (currentProgress > 0) {
+
+                return currentProgress;
+            }
+
             long lastDownloadedFileLength = Jarvis.downloadRecordDBHelper.getDownloadedFileLength(url);
 
             long fileLength = 0;
             if (remoteFile != null) {
                 fileLength = remoteFile.getLength();
+
             } else {
                 fileLength = Jarvis.downloadRecordDBHelper.getFileLengthRecord(url);
+
             }
 
             long downloadSize = debrisSize + lastDownloadedFileLength;
             float progress = 0;
             if (fileLength == 0) {
-                progress=0;
+                progress = 0;
             } else {
                 progress = downloadSize * 1.0f / fileLength;
             }
             if (progress == 1) {
                 downloadState = DownloadState.FINISH;
             }
+
+
             return progress;
         }
 
 
-        public void getDownloadedProgress(final DataCallBack<Float> callback){
+        public void getDownloadedProgress(final DataCallBack<Float> callback) {
 
 
             Jarvis.getInstance().threadPool.execute(new Runnable() {
                 @Override
                 public void run() {
 
-                    Log.e("getDownloadedProgress","Thread = "+Thread.currentThread().getName());
+                    Log.e("getDownloadedProgress", "Thread = " + Thread.currentThread().getName());
                     runThread(new ThreadCallBack() {
                         @Override
                         public void runOnUiThread() {
@@ -462,7 +507,6 @@ public class Jarvis {
 
 
         }
-
 
 
         /**
@@ -596,8 +640,6 @@ public class Jarvis {
         }
 
 
-
-
         @Override
         public void delete() {
 
@@ -614,9 +656,7 @@ public class Jarvis {
 
 
             //不允许在下载过程中删除
-            if(downloadState != DownloadState.START){
-
-
+            if (downloadState != DownloadState.START) {
 
                 downloadRecordDBHelper.clearDownloadRecordOfThisUrl(url);
                 File localFile = new File(filePath + (fileName == null ? RemoteFileUtil.getRemoteFileName(url) : fileName));
@@ -624,7 +664,7 @@ public class Jarvis {
 
 
                 System.out.println("deleteCacheFile onPauseDone ");
-                if(isDownloadListenerExist()){
+                if (isDownloadListenerExist()) {
                     runThread(new ThreadCallBack() {
                         @Override
                         public void runOnUiThread() {
@@ -642,22 +682,16 @@ public class Jarvis {
                     });
 
                 }
-                downloadState =DownloadState.PAUSE;
+                downloadState = DownloadState.PAUSE;
 
                 return delete;
 
-            }else{
-                downloadState =DownloadState.PAUSE;
+            } else {
+                downloadState = DownloadState.PAUSE;
 
 
                 return false;
             }
-
-
-
-
-
-
 
 
         }
@@ -672,10 +706,11 @@ public class Jarvis {
         }
 
 
-        private void resetRefreshTime(){
+        private void resetRefreshTime() {
 
-            lastRefreshTime=0L;
+            lastRefreshTime = 0L;
         }
+
         @Override
         public void download() {
 
@@ -692,13 +727,24 @@ public class Jarvis {
             downloadState = DownloadState.START;
 
 
-            if(isDownloadListenerExist()){
-                downloadListener.onStart();
+            if (isDownloadListenerExist()) {
+                runThread(new ThreadCallBack() {
+                    @Override
+                    public void runOnUiThread() {
+                        downloadListener.onStart();
+
+                    }
+
+                    @Override
+                    public void runOnThread() {
+                        downloadListener.onStart();
+
+                    }
+                });
             }
 
             debrisSize = 0;
             final long lastDownloadedFileLength = Jarvis.downloadRecordDBHelper.getDownloadedFileLength(url);
-            Log.v("lastFileLength", "lastDownloadedFileLength = " + lastDownloadedFileLength);
 //            threadPool = Executors.newFixedThreadPool(initThreadPoolLength);
 
             Jarvis.getInstance().threadPool.execute(new Runnable() {
@@ -709,35 +755,41 @@ public class Jarvis {
                     downloadThreadList = new ArrayList<>();
 
 
-                    if (remoteFile == null) {
+                    //避免重复获取
+                    if (remoteFile == null || remoteFile.getLength() <= 0) {
 
                         remoteFile = RemoteFileUtil.getRemoteFileLength(url);
                     }
                     final long fileLength = remoteFile.getLength();
-                    System.out.println("fileLength = " + fileLength);
+                    System.out.println("文件长度为fileLength = " + fileLength);
 
                     if (fileLength <= 0) {
 
 
-                        if (isDownloadListenerExist()) {
+                            downloadState = DownloadState.FAIL;
 
-                            runThread(new ThreadCallBack() {
-                                @Override
-                                public void runOnUiThread() {
-                                    downloadListener.onFail();
-                                }
+                            if (isDownloadListenerExist()) {
 
-                                @Override
-                                public void runOnThread() {
-                                    downloadListener.onFail();
+                                runThread(new ThreadCallBack() {
+                                    @Override
+                                    public void runOnUiThread() {
+                                        downloadListener.onFail();
+                                    }
 
-                                }
-                            });
+                                    @Override
+                                    public void runOnThread() {
+                                        downloadListener.onFail();
+
+                                    }
+                                });
+
+                            }
+
+
 //                            downloadListener.onPause();
-                            downloadState = DownloadState.PAUSE;
 
                             resetRefreshTime();
-                        }
+
                         return;
                     }
 
@@ -762,7 +814,7 @@ public class Jarvis {
                                     @Override
                                     public void runOnUiThread() {
 
-                                        if(uiVisible){
+                                        if (uiVisible) {
                                             downloadListener.onSuccess(localFile);
                                             downloadListener.onProgress(fileLength, 1.0f);
                                         }
@@ -802,8 +854,9 @@ public class Jarvis {
                                 final float progress = downloadSize * 1.0f / fileLength;
 //                                Log.v("progress", "progress=" + progress + ",current size = " + downloadSize + ",fileLength=" + fileLength);
 
+                                currentProgress = progress;
 
-                                if (isDownloadListenerExist()) {
+                                if (isDownloadListenerExist() && downloadState == DownloadState.START) {
 
 
                                     runThread(new ThreadCallBack() {
@@ -811,14 +864,14 @@ public class Jarvis {
                                         public void runOnUiThread() {
                                             //回调给UI线程
                                             //控制刷新频率
-                                            if(System.currentTimeMillis()-lastRefreshTime>refreshTime){
+                                            if (System.currentTimeMillis() - lastRefreshTime > refreshTime) {
 
-                                                if(uiVisible){
+                                                if (uiVisible) {
 
                                                     downloadListener.onProgress(downloadSize, progress);
                                                 }
 
-                                                lastRefreshTime=System.currentTimeMillis();
+                                                lastRefreshTime = System.currentTimeMillis();
                                             }
 
                                             if (progress == 1) {
@@ -854,7 +907,6 @@ public class Jarvis {
                                     });
 
 
-
                                 }
 
                             }
@@ -869,6 +921,8 @@ public class Jarvis {
                                 //曾经中断的话，计算新的进度需要加上上一次已下载的文件长度
                                 if (fileLength == (totalDownloadedSize + lastDownloadedFileLength)) {
 
+                                    currentProgress = 1.0f;
+
                                     Jarvis.getInstance().getDownloadThreadLinkedHashMap().remove(url);
 
 //                                    Downloader.downloadRecordDBHelper.clearDownloadRecordOfThisUrl(url);
@@ -879,8 +933,8 @@ public class Jarvis {
                                             public void runOnUiThread() {
 
 
-                                                if (getDownloadState() == DownloadState.START) {
-                                                    if(uiVisible){
+                                                if (getDownloadState() != DownloadState.FINISH) {
+                                                    if (uiVisible) {
 
                                                         downloadListener.onProgress(fileLength, 1.0f);
 
@@ -893,14 +947,13 @@ public class Jarvis {
                                                     }
 
 
-
                                                 }
                                             }
 
                                             @Override
                                             public void runOnThread() {
 
-                                                if (getDownloadState() == DownloadState.START) {
+                                                if (getDownloadState() != DownloadState.FINISH) {
                                                     downloadListener.onProgress(fileLength, 1.0f);
 
                                                     File file = new File(filePath + RemoteFileUtil.getRemoteFileName(url));
@@ -928,38 +981,70 @@ public class Jarvis {
                         public void onFail() {
 
 
-                            synchronized (this){
+                            synchronized (this) {
 
-                                failThreadCount++;
-                                if(failThreadCount==threadCount){
+                                if (downloadState!=DownloadState.FAIL) {
 
 
-                                    if (isDownloadListenerExist()) {
+
+
+                                        if (isDownloadListenerExist()) {
 
 //                                        downloadListener.onPause();
+                                            runThread(new ThreadCallBack() {
+                                                @Override
+                                                public void runOnUiThread() {
+                                                    downloadListener.onFail();
 
-                                        runThread(new ThreadCallBack() {
-                                            @Override
-                                            public void runOnUiThread() {
-                                                downloadListener.onFail();
+                                                }
 
-                                            }
+                                                @Override
+                                                public void runOnThread() {
+                                                    downloadListener.onFail();
 
-                                            @Override
-                                            public void runOnThread() {
-                                                downloadListener.onFail();
+                                                }
+                                            });
+                                            totalDownloadedSize = 0;
+                                            downloadState = DownloadState.FAIL;
 
-                                            }
-                                        });
+
+
 
                                     }
-                                    downloadState = DownloadState.FAIL;
-
-                                    failThreadCount = 0;
-
-                                    totalDownloadedSize = 0;
-
                                 }
+
+
+//                                failThreadCount++;
+//                                downloadState = DownloadState.FAIL;
+//                                if (failThreadCount == threadCount) {
+//
+//
+//                                    if (isDownloadListenerExist()) {
+//
+////                                        downloadListener.onPause();
+//
+//                                        runThread(new ThreadCallBack() {
+//                                            @Override
+//                                            public void runOnUiThread() {
+//                                                downloadListener.onFail();
+//
+//                                            }
+//
+//                                            @Override
+//                                            public void runOnThread() {
+//                                                downloadListener.onFail();
+//
+//                                            }
+//                                        });
+//
+//                                    }
+//
+//
+//                                    failThreadCount = 0;
+//
+//                                    totalDownloadedSize = 0;
+//
+//                                }
 
                             }
 
@@ -968,20 +1053,38 @@ public class Jarvis {
                         @Override
                         public void onPause() {
 
+//                          List<DownloadThread> list =   Jarvis.getInstance().getDownloadThreadLinkedHashMap().get(url);
+
 
                             synchronized (this) {
-                                pauseThreadCount++;
-                                //如果当前暂停的线程数等于所有线程数，则回调停
-                                if (pauseThreadCount == threadCount) {
+
+
+                                boolean allThreadPause = true;
+                                if (downloadThreadList != null && downloadThreadList.size() > 0) {
+                                    for (DownloadThread downloadThread : downloadThreadList) {
+
+                                        //如果还有线程不是暂停状态
+                                        if (downloadThread.getDownloadState() != DownloadState.PAUSE) {
+
+                                            allThreadPause = false;
+
+                                            break;
+
+                                        }
+                                    }
+                                }
+
+                                if (allThreadPause && (downloadState != DownloadState.PAUSE)) {
+
+                                    Log.e("all thread ", "onPause ? " + allThreadPause);
 
                                     if (isDownloadListenerExist()) {
 
-//                                        downloadListener.onPause();
 
                                         runThread(new ThreadCallBack() {
                                             @Override
                                             public void runOnUiThread() {
-                                                if(uiVisible){
+                                                if (uiVisible) {
 
                                                     downloadListener.onPause();
                                                 }
@@ -994,15 +1097,47 @@ public class Jarvis {
 
                                             }
                                         });
-                                        downloadState = DownloadState.PAUSE;
 
 
                                     }
-                                    pauseThreadCount = 0;
-                                    Log.e("all thread ", "onPause");
+                                    downloadState = DownloadState.PAUSE;
+
                                     totalDownloadedSize = 0;
 
                                 }
+
+//                                pauseThreadCount++;
+//                                //如果当前暂停的线程数等于所有线程数，则回调停
+//                                if (pauseThreadCount == threadCount) {
+//
+//                                    if (isDownloadListenerExist()) {
+//
+//
+//                                        runThread(new ThreadCallBack() {
+//                                            @Override
+//                                            public void runOnUiThread() {
+//                                                if (uiVisible) {
+//
+//                                                    downloadListener.onPause();
+//                                                }
+//
+//                                            }
+//
+//                                            @Override
+//                                            public void runOnThread() {
+//                                                downloadListener.onPause();
+//
+//                                            }
+//                                        });
+//                                        downloadState = DownloadState.PAUSE;
+//
+//
+//                                    }
+//                                    pauseThreadCount = 0;
+//                                    Log.e("all thread ", "onPause");
+//                                    totalDownloadedSize = 0;
+//
+//                                }
 
 //                                totalDownloadedSize = 0;
 //                                downloadState = DownloadState.PAUSE;
@@ -1025,11 +1160,11 @@ public class Jarvis {
                         DownloadThread downloadThread = null;
                         if (i != threadCount - 1) {
 
-                            downloadThread = new DownloadThread(url, filePath, i, lastIndex, div * (i + 1), childDownloadListener);
+                            downloadThread = new DownloadThread(url, filePath, i, lastIndex, div * (i + 1),requestPropertyMap, childDownloadListener);
 
 
                         } else {
-                            downloadThread = new DownloadThread(url, filePath, i, lastIndex, fileLength - 1, childDownloadListener);
+                            downloadThread = new DownloadThread(url, filePath, i, lastIndex, fileLength - 1,requestPropertyMap, childDownloadListener);
                         }
 
                         //添加到线程池中
@@ -1061,15 +1196,15 @@ public class Jarvis {
 
                 Activity activity = (Activity) contextWeakReference.get();
 
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
 
-                            threadCallBack.runOnUiThread();
+                        threadCallBack.runOnUiThread();
 
 
-                        }
-                    });
+                    }
+                });
 
 
             } else {

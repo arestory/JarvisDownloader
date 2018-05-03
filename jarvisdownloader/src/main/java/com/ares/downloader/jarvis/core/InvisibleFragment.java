@@ -2,7 +2,6 @@ package com.ares.downloader.jarvis.core;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 
 /**
  * Created on 2018/4/29 17:57.
@@ -34,7 +33,6 @@ public class InvisibleFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
 
-        Log.e("InvisibleFragment", "InvisibleFragment destroy");
         if (lifeCallBack != null) {
             lifeCallBack.onDestroy();
         }
@@ -46,17 +44,12 @@ public class InvisibleFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        System.out.println(getArguments().getString("url"));
-
-        Log.e("fragment", "pause");
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        System.out.println(getArguments().getString("url"));
-        Log.e("fragment", "onResume");
 
         if (hadStop) {
 
@@ -74,9 +67,6 @@ public class InvisibleFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        System.out.println(getArguments().getString("url"));
-
-        Log.e("fragment", "onStop");
 
         if (lifeCallBack != null) {
             lifeCallBack.onStop();

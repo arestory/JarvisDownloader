@@ -19,6 +19,7 @@ public interface DownloadListener {
 
     void onFail();
 
+
     void onDelete(boolean delete);
 
 

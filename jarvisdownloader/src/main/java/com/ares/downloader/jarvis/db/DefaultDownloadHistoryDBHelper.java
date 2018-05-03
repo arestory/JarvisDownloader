@@ -192,20 +192,14 @@ public class DefaultDownloadHistoryDBHelper extends AbsDownloadHistoryDBHelper {
     public void saveDownloadedFileLength(final String url, final int threadId, final long fileLength) {
 
 
-        threadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                ContentValues values = new ContentValues();
-                values.put("url", url);
-                values.put("thread_id", threadId);
-                values.put("downloaded_file_length", fileLength);
-//                Log.e("tag", "threadId = " + threadId + ",保存已下载文件大小 = " + fileLength);
 
-                getWritableDatabase().insert(TABLE_RECORD_FILE, null, values);
+        ContentValues values = new ContentValues();
+        values.put("url", url);
+        values.put("thread_id", threadId);
+        values.put("downloaded_file_length", fileLength);
+//        Log.e("tag", "threadId = " + threadId + ",保存已下载文件大小 = " + fileLength);
 
-//                System.out.println("线程" + threadId + "插入下载的记录数 = " + count);
-            }
-        });
+        getWritableDatabase().insert(TABLE_RECORD_FILE, null, values);
 
 
     }
@@ -258,8 +252,10 @@ public class DefaultDownloadHistoryDBHelper extends AbsDownloadHistoryDBHelper {
             values.put(DownloadRecord.START_INDEX_COLUMN, downloadRecord.startIndex);
 
             //do updateDownloadRecord
-            getWritableDatabase().update(TABLE_RECORD_NAME, values, "id = ? and url = ?", new String[]{downloadRecord.id + "", downloadRecord.url});
+           getWritableDatabase().update(TABLE_RECORD_NAME, values, "id = ? and url = ?", new String[]{downloadRecord.id + "", downloadRecord.url});
 
+
+            cursor.close();
 
         } else {
 
@@ -268,12 +264,11 @@ public class DefaultDownloadHistoryDBHelper extends AbsDownloadHistoryDBHelper {
             values.put(DownloadRecord.URL_COLUMN, downloadRecord.url);
             values.put(DownloadRecord.START_INDEX_COLUMN, downloadRecord.startIndex);
             values.put(DownloadRecord.END_INDEX_COLUMN, downloadRecord.endIndex);
-
             getWritableDatabase().insert(TABLE_RECORD_NAME, null, values);
+
 
         }
 
-        cursor.close();
     }
 
     @Override
@@ -338,6 +333,16 @@ public class DefaultDownloadHistoryDBHelper extends AbsDownloadHistoryDBHelper {
 
         public void setEndIndex(long endIndex) {
             this.endIndex = endIndex;
+        }
+
+        @Override
+        public String toString() {
+            return "DownloadRecord{" +
+                    "url='" + url + '\'' +
+                    ", id=" + id +
+                    ", startIndex=" + startIndex +
+                    ", endIndex=" + endIndex +
+                    '}';
         }
     }
 

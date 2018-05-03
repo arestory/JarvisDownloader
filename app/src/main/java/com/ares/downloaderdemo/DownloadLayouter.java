@@ -1,7 +1,6 @@
 package com.ares.downloaderdemo;
 
 import android.os.Environment;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -54,13 +53,13 @@ public class DownloadLayouter {
 
                 }
 
+
                 @Override
                 public void onProgress(long downloadSize, float progress) {
 
                     int progressInt = (int) (progress * 100);
                     progressBar.setProgress(progressInt);
 //                    btn.setText(String.valueOf(progressInt)+"%");
-                    Log.i(",", "Thread = " + Thread.currentThread().getName() + "pro = " + progressInt);
                 }
 
                 @Override
@@ -88,7 +87,8 @@ public class DownloadLayouter {
                 }
             });
 
-            downloader.allowBackgroundDownload(sw1.isChecked());
+
+            downloader.addExtraRequestProperty("test","test").allowBackgroundDownload(sw1.isChecked());
             sw1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

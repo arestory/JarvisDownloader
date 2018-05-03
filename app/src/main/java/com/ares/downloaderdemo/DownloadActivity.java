@@ -3,7 +3,6 @@ package com.ares.downloaderdemo;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Debug;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -33,18 +32,8 @@ public class DownloadActivity extends AppCompatActivity {
     String url6 = "http://dianlipai.com/download/1499075088291045643dianlipai_v1.0.1_dianlipai.apk";
     String url7 = "http://dianlipai.com/download/1504593048593012436dianlipai_v1.2.0_dianlipai_2017-09-04_legu_dianlipai_signed_zipalign.apk";
     String url8 = "http://dianlipai.com/download/1517462120914057094dianlipai_v2.0.0_ali_2018-02-01_11_37.apk";
-    String url9 = "http://dianlipai.com/download/1517546283735097624dianlipai_v2.0.0_ali_2018-02-02_12_31.apk";
-    String url10 = "https://gzcu01.baidupcs.com/file/1cf1fd9a434944c2c733f2c2a224a189?bkt=p3-000045733e811f5e69109fcedda7c24ce1bf&fid=220969561-250528-411052751306431&time=1525008937&sign=FDTAXGERLQBHSKa-DCb740ccc5511e5e8fedcff06b081203-TXI0%2Ff2R7rr8Oqniic6xEckIQVI%3D&to=86&size=8065435&sta_dx=8065435&sta_cs=0&sta_ft=JPG&sta_ct=6&sta_mt=6&fm2=MH%2CYangquan%2CAnywhere%2C%2Cguangdong%2Ccnc&vuk=220969561&iv=0&newver=1&newfm=1&secfm=1&flow_ver=3&pkey=000045733e811f5e69109fcedda7c24ce1bf&sl=76480590&expires=8h&rt=sh&r=211508206&mlogid=2757620471471505982&vbdid=4070687391&fin=IMG_0016.JPG&fn=IMG_0016.JPG&rtype=1&dp-logid=2757620471471505982&dp-callid=0.1.1&hps=1&tsl=80&csl=80&csign=THHv6DG%2FPicTjcfY%2F6GKSQjzL3o%3D&so=0&ut=6&uter=4&serv=0&uc=2361768026&ic=3018533560&ti=42c2e66164287fda923b976fad67d20d2cc040f6418d99e5305a5e1275657320&by=themis";
-    String url11 = "http://t2.hddhhn.com/uploads/tu/201804/9999/ff28b2f8bc.jpg";
-    String url12 = "http://t2.hddhhn.com/uploads/tu/201804/9999/f7abe3f7b7.jpg";
-    String url13 = "http://t2.hddhhn.com/uploads/tu/201804/9999/978d773843.jpg";
-    String url14 = "http://t2.hddhhn.com/uploads/tu/201804/9999/09a0713fb9.jpg";
-    String url15 = "http://t2.hddhhn.com/uploads/tu/201804/9999/d4e5eeb6fc.jpg";
-    String url16 = "http://t2.hddhhn.com/uploads/tu/201804/9999/7d9367fa9e.jpg";
-    String url17 = "http://t2.hddhhn.com/uploads/tu/201804/9999/2f32e5e42e.jpg";
-    String url18 = "http://t2.hddhhn.com/uploads/tu/201804/9999/1642e3e00c.jpg";
-    String url19 = "http://t2.hddhhn.com/uploads/tu/201804/9999/e8e1af091d.jpg";
-    String url20 = "http://t2.hddhhn.com/uploads/tu/201804/9999/e840e062f1.jpg";
+    String url9 = "http://ares-space.com/img/yunnan/daytwo/dianchi/IMG_2944.mov";
+
 
 
     private RecyclerView rv;
@@ -118,7 +107,6 @@ public class DownloadActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Debug.stopMethodTracing();
     }
 
     public static void start(Context context) {

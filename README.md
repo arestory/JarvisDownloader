@@ -1,4 +1,5 @@
 # JarvisDownloader
+[![](https://jitpack.io/v/yuwenque/JarvisDownloader.svg)](https://jitpack.io/#yuwenque/JarvisDownloader)
 
 熟悉漫威电影的人都知道Jarvis，他是钢铁侠的智能管家，帮助钢铁侠制造装甲、分析大量数据、协助建模等各种智能工作，可惜在复联2中，Jarvis与心灵之石结合成Vision，钢铁侠失去了这位如亲人一般的智能AI，后来Tony用F.R.I.D.A.Y代替了Jarvis的工作，但从钢铁侠与Friday的互动来看，他只把Friday当做一般的AI，并没有投入如对待Jarvis的感情。
 

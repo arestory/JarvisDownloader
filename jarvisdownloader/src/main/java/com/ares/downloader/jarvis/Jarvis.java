@@ -891,7 +891,12 @@ public class Jarvis {
                                         @Override
                                         public void runOnThread() {
 
-                                            downloadListener.onProgress(downloadSize, progress);
+                                            if (System.currentTimeMillis() - lastRefreshTime > refreshTime) {
+
+                                                downloadListener.onProgress(downloadSize, progress);
+
+                                                lastRefreshTime = System.currentTimeMillis();
+                                            }
 
                                             if (progress == 1) {
                                                 File file = new File(filePath + RemoteFileUtil.getRemoteFileName(url));
@@ -900,6 +905,7 @@ public class Jarvis {
                                                     downloadListener.onSuccess(file);
                                                 }
                                                 downloadState = DownloadState.FINISH;
+                                                resetRefreshTime();
 
 
                                             }

@@ -116,7 +116,7 @@ public class DownloadLayouter {
                 @Override
                 public void onClick(View v) {
 
-                    if (downloader.getDownloadState() == DownloadState.PAUSE||downloader.getDownloadState() == DownloadState.FAIL) {
+                    if (downloader.getDownloadState() == DownloadState.PAUSE||downloader.getDownloadState() == DownloadState.FAIL||downloader.getDownloadState() == DownloadState.DELETE) {
 
                         downloader.download();
 

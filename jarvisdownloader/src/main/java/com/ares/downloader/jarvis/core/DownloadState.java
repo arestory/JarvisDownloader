@@ -9,6 +9,6 @@ package com.ares.downloader.jarvis.core;
 public enum  DownloadState {
 
 
-    START, PAUSE, FINISH,FAIL
+    START, PAUSE, FINISH,FAIL,DELETE
 
 }

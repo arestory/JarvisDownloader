@@ -147,7 +147,9 @@ public class DownloadThread extends Thread {
                     file.mkdirs();
                 }
 
-                RandomAccessFile randomAccessFile = new RandomAccessFile(filePath + (fileName == null ? RemoteFileUtil.getRemoteFileName(this.url) : fileName), "rw");
+                String totalPath = filePath + (fileName == null ? RemoteFileUtil.getRemoteFileName(this.url) : fileName);
+
+                RandomAccessFile randomAccessFile = new RandomAccessFile(totalPath, "rw");
 
                 //设置该分段的文件起点位置
                 randomAccessFile.seek(startIndex);
@@ -155,6 +157,7 @@ public class DownloadThread extends Thread {
 
                 byte[] buffer = new byte[1024];
                 int length = -1;
+
 
 
                 while ((length = inputStream.read(buffer)) != -1 && !isPause) {

@@ -24,7 +24,7 @@ public class DownloadActivity extends AppCompatActivity {
 
 
     String url = "http://pic2.zhimg.com/80/v2-4bd879d9876f90c1db0bd98ffdee17f0_hd.jpg";
-    String url1 = "http://img1.gamersky.com/image2017/01/20170114_zl_91_6/gamersky_01origin_01_201711416272DB.jpg";
+    String url1 = "http://www.sxotu.com/u/20180509/09154140.gif";
     String url2 = "http://pic1.win4000.com/wallpaper/2017-10-11/59dde2bca944f.jpg";
     String url3 = "http://gdown.baidu.com/data/wisegame/d2fbbc8e64990454/wangyiyunyinle_87.apk";
     String url4 = "http://dianlipai.com/download/1524539667804095709dianlipai_v2.0.1_yingyongbao_2018-04-24_09_41_legu_signed_zipalign.apk";

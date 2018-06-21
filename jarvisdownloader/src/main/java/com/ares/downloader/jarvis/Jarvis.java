@@ -49,6 +49,7 @@ public class Jarvis {
     private LinkedHashMap<String, Downloader> downloaderList;
 
 
+
     private static AbsDownloadHistoryDBHelper downloadRecordDBHelper;//全局的数据库helper
 
     //保存url以及其对于的下载线程列表
@@ -62,7 +63,7 @@ public class Jarvis {
     /**
      * 建议在Application中初始化
      *
-     * @param downloadRecordDBHelper
+     * @param downloadRecordDBHelper 数据库
      */
     public static void init(AbsDownloadHistoryDBHelper downloadRecordDBHelper) {
 
@@ -303,26 +304,28 @@ public class Jarvis {
         private float currentProgress = 0f;//当前进度
 
 
-        private Map<String,String> requestPropertyMap = new HashMap<>();
+        private Map<String, String> requestPropertyMap = new HashMap<>();
 
-        /**
+         /**
          * 添加额外的请求头
+         *
          * @param key
          * @param value
          * @return
          */
-        public Downloader addExtraRequestProperty(String key, String value){
+        public Downloader addExtraRequestProperty(String key, String value) {
 
-            requestPropertyMap.put(key,value);
+            requestPropertyMap.put(key, value);
             return this;
         }
 
         /**
          * 添加额外的请求头
+         *
          * @param map
          * @return
          */
-        public Downloader addExtraRequestPropertyMap(Map<String,String> map){
+        public Downloader addExtraRequestPropertyMap(Map<String, String> map) {
 
 
             requestPropertyMap.putAll(map);
@@ -355,8 +358,10 @@ public class Jarvis {
                 final FragmentTransaction transaction = activity.getFragmentManager().beginTransaction();
 
 
-                transaction.add(fragment, url);
-                transaction.commit();
+                if(!fragment.isAdded()){
+                    transaction.add(fragment, url);
+                    transaction.commit();
+                }
 
                 fragment.setLifeCallBack(new InvisibleFragment.LifeCallBack() {
                     @Override
@@ -391,7 +396,10 @@ public class Jarvis {
                         System.out.println("current state = " + downloadState);
                         if (!uiVisible) {
 
-                            recovery();
+                            if(downloadState !=DownloadState.DELETE){
+
+                                recovery();
+                            }
                             uiVisible = true;
                         }
                     }
@@ -655,6 +663,7 @@ public class Jarvis {
         public boolean deleteCacheFile() {
 
 
+
             //不允许在下载过程中删除
             if (downloadState != DownloadState.START) {
 
@@ -682,7 +691,7 @@ public class Jarvis {
                     });
 
                 }
-                downloadState = DownloadState.PAUSE;
+                downloadState = DownloadState.DELETE;
 
                 return delete;
 
@@ -766,37 +775,43 @@ public class Jarvis {
                     if (fileLength <= 0) {
 
 
-                            downloadState = DownloadState.FAIL;
+                        downloadState = DownloadState.FAIL;
 
-                            if (isDownloadListenerExist()) {
+                        if (isDownloadListenerExist()) {
 
-                                runThread(new ThreadCallBack() {
-                                    @Override
-                                    public void runOnUiThread() {
-                                        downloadListener.onFail();
-                                    }
+                            runThread(new ThreadCallBack() {
+                                @Override
+                                public void runOnUiThread() {
+                                    downloadListener.onFail();
+                                }
 
-                                    @Override
-                                    public void runOnThread() {
-                                        downloadListener.onFail();
+                                @Override
+                                public void runOnThread() {
+                                    downloadListener.onFail();
 
-                                    }
-                                });
+                                }
+                            });
 
-                            }
+                        }
 
 
 //                            downloadListener.onPause();
 
-                            resetRefreshTime();
+                        resetRefreshTime();
 
                         return;
                     }
 
 
-                    final File localFile = new File(filePath + (fileName == null ? RemoteFileUtil.getRemoteFileName(url) : fileName));
-                    boolean exist = localFile.exists();
+
+                    String totalPath = filePath + (fileName == null ? RemoteFileUtil.getRemoteFileName(url) : fileName);
+                    final File localFile = new File(totalPath);
+                    final boolean exist = localFile.exists();
                     System.out.println("local file = " + localFile.getPath() + ", exist = " + exist);
+
+
+
+
                     if (exist) {
 
                         //数据库记录的已下载的文件总大小
@@ -989,31 +1004,27 @@ public class Jarvis {
 
                             synchronized (this) {
 
-                                if (downloadState!=DownloadState.FAIL) {
+                                if (downloadState != DownloadState.FAIL) {
 
 
-
-
-                                        if (isDownloadListenerExist()) {
+                                    if (isDownloadListenerExist()) {
 
 //                                        downloadListener.onPause();
-                                            runThread(new ThreadCallBack() {
-                                                @Override
-                                                public void runOnUiThread() {
-                                                    downloadListener.onFail();
+                                        runThread(new ThreadCallBack() {
+                                            @Override
+                                            public void runOnUiThread() {
+                                                downloadListener.onFail();
 
-                                                }
+                                            }
 
-                                                @Override
-                                                public void runOnThread() {
-                                                    downloadListener.onFail();
+                                            @Override
+                                            public void runOnThread() {
+                                                downloadListener.onFail();
 
-                                                }
-                                            });
-                                            totalDownloadedSize = 0;
-                                            downloadState = DownloadState.FAIL;
-
-
+                                            }
+                                        });
+                                        totalDownloadedSize = 0;
+                                        downloadState = DownloadState.FAIL;
 
 
                                     }
@@ -1166,11 +1177,11 @@ public class Jarvis {
                         DownloadThread downloadThread = null;
                         if (i != threadCount - 1) {
 
-                            downloadThread = new DownloadThread(url, filePath, i, lastIndex, div * (i + 1),requestPropertyMap, childDownloadListener);
+                            downloadThread = new DownloadThread(url, filePath, i, lastIndex, div * (i + 1), requestPropertyMap, childDownloadListener);
 
 
                         } else {
-                            downloadThread = new DownloadThread(url, filePath, i, lastIndex, fileLength - 1,requestPropertyMap, childDownloadListener);
+                            downloadThread = new DownloadThread(url, filePath, i, lastIndex, fileLength - 1, requestPropertyMap, childDownloadListener);
                         }
 
                         //添加到线程池中

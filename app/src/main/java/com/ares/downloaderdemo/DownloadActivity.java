@@ -27,12 +27,6 @@ public class DownloadActivity extends AppCompatActivity {
     String url1 = "http://www.sxotu.com/u/20180509/09154140.gif";
     String url2 = "http://pic1.win4000.com/wallpaper/2017-10-11/59dde2bca944f.jpg";
     String url3 = "http://gdown.baidu.com/data/wisegame/d2fbbc8e64990454/wangyiyunyinle_87.apk";
-    String url4 = "http://dianlipai.com/download/1524539667804095709dianlipai_v2.0.1_yingyongbao_2018-04-24_09_41_legu_signed_zipalign.apk";
-    String url5 = "http://dianlipai.com/download/1497952239876080593dianlipai_v1.0.0_dianlipai.apk";
-    String url6 = "http://dianlipai.com/download/1499075088291045643dianlipai_v1.0.1_dianlipai.apk";
-    String url7 = "http://dianlipai.com/download/1504593048593012436dianlipai_v1.2.0_dianlipai_2017-09-04_legu_dianlipai_signed_zipalign.apk";
-    String url8 = "http://dianlipai.com/download/1517462120914057094dianlipai_v2.0.0_ali_2018-02-01_11_37.apk";
-    String url9 = "http://ares-space.com/img/yunnan/daytwo/dianchi/IMG_2944.mov";
 
 
 
@@ -62,11 +56,10 @@ public class DownloadActivity extends AppCompatActivity {
 //        rv.setAdapter(downloadAdapter);
 
 
-        new DownloadLayouter().add(findViewById(R.id.layout1), url9)
+        new DownloadLayouter().add(findViewById(R.id.layout1), url2)
 
                 .add(findViewById(R.id.layout2),  url1)
-                .add(findViewById(R.id.layout3), url3).add(findViewById(R.id.layout4), url4)
-                .add(findViewById(R.id.layout5), url5).add(findViewById(R.id.layout6), url6)
+                .add(findViewById(R.id.layout3), url).add(findViewById(R.id.layout4), url3);
         ;
 
         Jarvis.getInstance().getDownloadedList(new DataCallBack<List<LocalFileRecordBean>>() {

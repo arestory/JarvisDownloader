@@ -33,7 +33,7 @@ repositories {
 
 dependencies {
 
-	api 'com.github.yuwenque:JarvisDownloader:0.4.0'
+	api 'com.github.arestory:JarvisDownloader:0.4.0'
 
 }
 
